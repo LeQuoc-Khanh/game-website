@@ -1,11 +1,6 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "game-website");
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+include_once 'connect.php';
 ?>
 
 <!DOCTYPE html>
@@ -217,13 +212,13 @@ h2 {
                     Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?>
                 </button>
                 <div id="myDropdown" class="dropdown-content">
-                    <a href="/game-website/user/tai-khoan.php">Tài Khoản</a>
+                    <a href="/game-website/tai-khoan.php">Tài Khoản</a>
                     <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
                     <a href="/game-website/dang-xuat.php">Đăng xuất</a>
                 </div>
             </div>
         <?php else: ?>
-            <a href="/game-website/dang-nhap/dang-nhap.php">
+            <a href="/game-website/dang-nhap.php">
                 <button class="login">Đăng nhập</button>
             </a>
         <?php endif; ?>
