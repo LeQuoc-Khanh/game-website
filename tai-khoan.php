@@ -1,11 +1,12 @@
 <?php
 session_start(); // Bắt đầu session
-
+include_once 'connect.php';
 // Kiểm tra xem đã đăng nhập và có phải là admin không
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
-    // Nếu chưa đăng nhập hoặc không phải admin
+    $_SESSION['redirect_after_login'] = '/game-website/tai-khoan.php';
+    // Nếu chưa đăng nhập
     echo "<script>alert('Bạn không có quyền truy cập do chưa đăng nhập!');</script>";
-    echo "<script>window.location.href = '/game-website/dang-nhap/dang-nhap.php';</script>";
+    echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
 ?>
