@@ -1,13 +1,7 @@
 <?php
 session_set_cookie_params(0);
 session_start();
-
-$conn = new mysqli("localhost", "root", "", "game-website");
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+include_once 'connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
@@ -35,11 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_SESSION['role'] == 'admin') {
                 echo "<script>alert('Đăng nhập thành công!');</script>";
                 // Nếu là admin, chuyển hướng đến trang quản lý admin
-                echo "<script>window.location.href = '/game-website/admin/admin.php';</script>";
-            } else {
+                echo "<script>window.location.href = '/game-website/admin.php';</script>";
+            } elseif (isset($_SESSION['redirect_after_login'])) {
+                $redirect = $_SESSION['redirect_after_login'];
+                unset($_SESSION['redirect_after_login']);
+                header("Location: $redirect");
+                exit();
+            }else {
                 echo "<script>alert('Đăng nhập thành công!');</script>";
                 // Nếu là user, chuyển hướng đến trang chủ
-                echo "<script>window.location.href= '/game-website/trang-chu/trang-chu.php';</script>";
+                echo "<script>window.location.href= '/game-website/trang-chu.php';</script>";
             }
             exit();  // Đảm bảo không có mã nào chạy thêm sau khi chuyển hướng
         } else {
@@ -114,7 +113,7 @@ a:hover {
             <button type="submit">Đăng nhập</button>
         </form>
 
-        Bạn chưa có tài khoản?<a href="/game-website/dang-ky/dang-ky.php">Đăng ký</a>
+        Bạn chưa có tài khoản?<a href="/game-website/dang-ky.php">Đăng ký</a>
 </div>
 </body>
 </html>
