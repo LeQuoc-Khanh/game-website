@@ -9,6 +9,31 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
     echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_info'])) {
+    $user_id = $_SESSION['user_id'];
+    $display_name = trim($_POST['display_name']);
+
+    if (!empty($display_name)) {
+        $stmt = $conn->prepare("UPDATE users SET display_name = ? WHERE id = ?");
+        $stmt->bind_param("si", $display_name, $user_id);
+        if ($stmt->execute()) {
+            // ✅ Cập nhật thành công thì lưu vào session
+            $_SESSION['display_name'] = $display_name;
+
+            echo "<script>alert('Cập nhật tên hiển thị thành công!');</script>";
+        } else {
+            echo "<script>alert('Cập nhật thất bại.');</script>";
+        }
+    } else {
+        echo "<script>alert('Tên hiển thị không được để trống!');</script>";
+    }
+}
+$user_id = $_SESSION['user_id'];
+$result = $conn->query("SELECT display_name FROM users WHERE id = $user_id");
+$current_display_name = '';
+if ($result && $row = $result->fetch_assoc()) {
+    $current_display_name = $row['display_name'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -144,25 +169,22 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
     <body>
         <!-- Banner -->
         <div class="banner">
-            <h1>GameVui - Cộng Đồng Game Hay</h1>
+            <h1>gamevui24h - Cộng Đồng Game Hay</h1>
         </div>
     
         <!-- Giao diện thông tin người dùng -->
         <div class="profile-container">
             <h2 class="user-name"><span class="user-id">id: 1024131</span></h2>
-            
             <div class="profile-content">
-                <!-- Phần bên trái: Avatar -->
                 <div class="profile-avatar">
                     <img src="images/user-avatar.png" alt="Avatar" class="avatar-img">
                     <a href="#" class="change-avatar">Thay đổi hình đại diện</a>
                     <button class="change-avatar-btn">Thay ảnh đại diện</button>
                 </div>
-    
-                <!-- Phần bên phải: Thông tin cá nhân -->
+                <form method="POST" action="">
                 <div class="profile-info">
                     <label for="display-name">Tên hiển thị</label>
-                    <input type="text" id="display-name" value="">
+                    <input type="text" id="display-name" name="display_name" value="<?= htmlspecialchars($current_display_name) ?>">
     
                     <label for="dob">Ngày sinh</label>
                     <select id="day">
@@ -186,8 +208,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
                     <input type="text" id="address" placeholder="Nhập địa chỉ liên lạc">
     
                     <button class="more-info">Thông tin thêm</button>
-                    <button class="save-info">Lưu thông tin</button>
+                    <button type="submit" name="save_info" class="save-info">Lưu thông tin</button>
                 </div>
+                </form>
             </div>
         </div>
     

@@ -32,7 +32,7 @@ body {
 
 /* Header */
 header {
-    background-color: #007bff;
+    background: linear-gradient(to right, #2a5298, #0d6efd);
     color: white;
     padding: 15px 30px;
     display: flex;
@@ -254,17 +254,17 @@ h2 {
 <header>
     <h1>gamevui24h.com</h1>
     <div class="auth-buttons">
-        <?php if (isset($_SESSION['username'])): ?>
-            <div class="dropdown">
-                <button onclick="toggleDropdown()" class="dropbtn">
-                    Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?>
-                </button>
-                <div id="myDropdown" class="dropdown-content">
-                    <a href="/game-website/tai-khoan.php">Tài Khoản</a>
-                    <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
-                    <a href="/game-website/dang-xuat.php">Đăng xuất</a>
-                </div>
-            </div>
+    <?php if (isset($_SESSION['username'])): ?>
+    <div class="dropdown">
+        <button onclick="toggleDropdown()" class="dropbtn">
+            Xin chào, <?php echo htmlspecialchars($_SESSION['display_name'] ?? $_SESSION['username']); ?>
+        </button>
+        <div id="myDropdown" class="dropdown-content">
+            <a href="/game-website/tai-khoan.php">Tài Khoản</a>
+            <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
+            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
+        </div>
+    </div>
         <?php else: ?>
             <a href="/game-website/dang-nhap.php">
                 <button class="login">Đăng nhập</button>
