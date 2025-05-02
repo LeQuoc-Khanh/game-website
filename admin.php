@@ -51,6 +51,18 @@ if (isset($_GET['delete_game_id'])) {
     header("Location: admin.php?section=games");
     exit;
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_game'])) {
+    $originalName = $_POST['original_name'];
+    $newName = $_POST['name'];
+    $newLink = $_POST['link'];
+
+    $stmt = $conn->prepare("UPDATE games SET game_name = ?, game_url = ? WHERE game_name = ?");
+    $stmt->bind_param("sss", $newName, $newLink, $originalName);
+    $stmt->execute();
+
+    header("Location: admin.php?section=games");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -340,6 +352,28 @@ table td a:hover {
     <input type="text" name="link" placeholder="Link chơi game" required style="margin-right: 10px;">
     <button type="submit" name="add_game">Thêm</button>
 </form>
+    <?php
+if (isset($_GET['edit_game_id'])) {
+    $edit_game_name = $_GET['edit_game_id'];
+    $stmt = $conn->prepare("SELECT * FROM games WHERE game_name = ?");
+    $stmt->bind_param("s", $edit_game_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $editGame = $result->fetch_assoc();
+        ?>
+        <h3>Sửa thông tin game</h3>
+        <form method="POST" style="margin-bottom: 20px;">
+            <input type="hidden" name="original_name" value="<?= htmlspecialchars($editGame['game_name']) ?>">
+            <input type="text" name="name" value="<?= htmlspecialchars($editGame['game_name']) ?>" required style="margin-right: 10px;">
+            <input type="text" name="link" value="<?= htmlspecialchars($editGame['game_url']) ?>" required style="margin-right: 10px;">
+            <button type="submit" name="edit_game">Cập nhật</button>
+        </form>
+        <?php
+    }
+}
+?>
+
 
 <!-- Danh sách game -->
 <table>
@@ -354,6 +388,7 @@ table td a:hover {
                 <td><?= htmlspecialchars($game['game_name']) ?></td>
                 <td><a href="<?= htmlspecialchars($game['game_url']) ?>" target="_blank">Chơi</a></td>
                 <td>
+                    <a href="?section=games&edit_game_id=<?= urlencode($game['game_name']) ?>">Sửa</a> |
                     <a href="?section=games&delete_game_id=<?= $game['game_name'] ?>" onclick="return confirm('Xóa game này?');">Xóa</a>
                 </td>
             </tr>
