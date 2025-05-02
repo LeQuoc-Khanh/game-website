@@ -4,13 +4,13 @@ session_start();
 include_once 'connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
     // Tìm tài khoản trong database
-    $sql = "SELECT * FROM users WHERE username = ?";
+    $sql = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -22,7 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             // Đúng password → lưu session
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $user['email'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['display_name'] = $user['display_name'];
             $_SESSION['role'] = $user['role'];  // Lưu thông tin role vào session
 
             // Kiểm tra xem người dùng là admin hay user và chuyển hướng tương ứng
@@ -45,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('Mật khẩu không đúng!');</script>";
         }
     } else {
-        echo "<script>alert('Tên đăng nhập không tồn tại!');</script>";
+        echo "<script>alert('Email không tồn tại!');</script>";
     }
 
     $stmt->close();
@@ -108,7 +110,7 @@ a:hover {
 <div class="login-container">
         <h2>Đăng nhập</h2>
         <form method="post">
-            <input type="text" name="username" placeholder="Tên đăng nhập" required>
+            <input type="text" name="email" placeholder="Nhập Email để đăng nhập" required>
             <input type="password" name="password" placeholder="Mật khẩu" required>
             <button type="submit">Đăng nhập</button>
         </form>
