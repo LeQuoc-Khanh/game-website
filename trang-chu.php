@@ -293,7 +293,7 @@ h2 {
                 <a href="/game-website/game/Tetris/tetris.php">Tetris</a> 
         </div>
         <div class="game-card">
-            <a href="/game-website/game/Snake/snake.html">Snake</a> 
+            <a href="/game-website/game/snake.html">Snake</a> 
         </div>
     </div>
     <div class="leaderboard">
@@ -371,12 +371,6 @@ h2 {
     </a>
   </div>
 </div>
-
-
-
-
-
-<!-- Footer -->
 <div class="footer">
     &copy; 2025 Game Cổ Điển. All rights reserved.
 </div>
