@@ -43,13 +43,11 @@ if ($result && $row = $result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tài khoản</title>
     <style>
-        /* Bố cục chung */
         body {
             font-family: Arial, sans-serif;
             background: #f4f4f4;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
 
         /* Banner */
@@ -58,6 +56,7 @@ if ($result && $row = $result->fetch_assoc()) {
             color: white;
             padding: 5px;
             font-size: 14px;
+            display: flex;
         }
 
         /* Container chính */
@@ -70,6 +69,10 @@ if ($result && $row = $result->fetch_assoc()) {
             border-radius: 10px;
             text-align: left;
         }
+        .show {
+            display: block;
+        }
+
 
         /* Tiêu đề */
         .user-name {
@@ -131,7 +134,7 @@ if ($result && $row = $result->fetch_assoc()) {
             margin-top: 10px;
         }
 
-        .profile-info input, .profile-info select {
+        .profile-info input, select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -162,15 +165,53 @@ if ($result && $row = $result->fetch_assoc()) {
             background: #2a5298;
             color: white;
         }
+        .dropbtn {
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    display: none;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
 
     </style>
 </head>
 <body>
-    <body>
-        <!-- Banner -->
-        <div class="banner">
-            <h1>gamevui24h - Cộng Đồng Game Hay</h1>
+<div class="banner">
+    <div class="dropdown">
+        <button onclick="toggleDropdown()" class="dropbtn">&#9776;</button>
+        <div id="myDropdown" class="dropdown-content" style="display: none;">
+            <a href="/game-website/trang-chu.php">Trang chủ</a>
+            <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
+            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
         </div>
+    </div>
+    <div><h1>gamevui24h</h1></div>
+</div>
     
         <!-- Giao diện thông tin người dùng -->
         <div class="profile-container">
@@ -181,8 +222,8 @@ if ($result && $row = $result->fetch_assoc()) {
                     <a href="#" class="change-avatar">Thay đổi hình đại diện</a>
                     <button class="change-avatar-btn">Thay ảnh đại diện</button>
                 </div>
-                <form method="POST" action="">
                 <div class="profile-info">
+                <form method="POST" action="">
                     <label for="display-name">Tên hiển thị</label>
                     <input type="text" id="display-name" name="display_name" value="<?= htmlspecialchars($current_display_name) ?>">
     
@@ -209,8 +250,8 @@ if ($result && $row = $result->fetch_assoc()) {
     
                     <button class="more-info">Thông tin thêm</button>
                     <button type="submit" name="save_info" class="save-info">Lưu thông tin</button>
-                </div>
                 </form>
+                </div>
             </div>
         </div>
     
@@ -218,8 +259,19 @@ if ($result && $row = $result->fetch_assoc()) {
             document.querySelector(".change-avatar-btn").addEventListener("click", function() {
                 alert("Chức năng này chưa được hỗ trợ!");
             });
+    function toggleDropdown() {
+        const dropdown = document.getElementById("myDropdown");
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Ẩn dropdown khi click ra ngoài
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            const dropdown = document.getElementById("myDropdown");
+            dropdown.style.display = "none";
+        }
+    }
+
         </script>
-    </body>
-    
 </body>
 </html>
