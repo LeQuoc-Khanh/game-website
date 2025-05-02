@@ -183,6 +183,7 @@ body, html {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    overflow: auto;
 }
 
 /* TABLE */
@@ -297,8 +298,9 @@ table td a:hover {
         <table>
                 <tr>
                     <th>ID</th>
-                    <th>Email</th>
                     <th>Username</th>
+                    <th>Display Name</th>
+                    <th>Email</th>
                     <th>Password</th>
                     <th>Role</th>
                     <th>Pacman</th>
@@ -310,8 +312,9 @@ table td a:hover {
                     <?php while($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?= $row['id'] ?></td>
-                            <td><?= htmlspecialchars($row['email']) ?></td>
                             <td><?= htmlspecialchars($row['username']) ?></td>
+                            <td><?= htmlspecialchars($row['display_name']) ?></td>
+                            <td><?= htmlspecialchars($row['email']) ?></td>
                             <td class="password"><?= htmlspecialchars($row['password']) ?></td>
                             <td><?= $row['role'] ?></td>
                             <td><?= $row['pacman_score'] ?></td>

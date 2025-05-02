@@ -256,13 +256,14 @@ h2 {
     <div class="auth-buttons">
     <?php if (isset($_SESSION['username'])): ?>
         <?php
-$nameToShow = isset($_SESSION['display_name']) && $_SESSION['display_name'] !== ''
-    ? $_SESSION['display_name']
-    : $_SESSION['username'];
+        $nameToShow = isset($_SESSION['display_name']) && $_SESSION['display_name'] !== ''
+        ? $_SESSION['display_name']
+        : $_SESSION['username'];
 ?>
-<button onclick="toggleDropdown()" class="dropbtn">
-    👋 Xin chào, <strong><?php echo htmlspecialchars($nameToShow); ?></strong>
-</button>
+<div class="dropdown">
+        <button onclick="toggleDropdown()" class="dropbtn">
+            👋 Xin chào, <strong><?php echo htmlspecialchars($nameToShow); ?></strong>
+        </button>
         <div id="myDropdown" class="dropdown-content">
             <a href="/game-website/tai-khoan.php">Tài Khoản</a>
             <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>

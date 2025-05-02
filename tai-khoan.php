@@ -9,18 +9,25 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
     echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
+// Kiểm tra xem có gửi thông tin cập nhật không
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_info'])) {
     $user_id = $_SESSION['user_id'];
     $display_name = trim($_POST['display_name']);
+    $gender = $_POST['gender'];
+    $day = $_POST['day'];
+    $month = $_POST['month'];
+    $year = $_POST['year'];
+    $dob = "$year-$month-$day";
+    $address = trim($_POST['address']);  // Lấy địa chỉ từ form
 
+    // Kiểm tra tên hiển thị không trống
     if (!empty($display_name)) {
-        $stmt = $conn->prepare("UPDATE users SET display_name = ? WHERE id = ?");
-        $stmt->bind_param("si", $display_name, $user_id);
+        // Cập nhật thông tin người dùng, bao gồm địa chỉ
+        $stmt = $conn->prepare("UPDATE users SET display_name = ?, gender = ?, date_of_birth = ?, address = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $display_name, $gender, $dob, $address, $user_id);
         if ($stmt->execute()) {
-            // ✅ Cập nhật thành công thì lưu vào session
             $_SESSION['display_name'] = $display_name;
-
-            echo "<script>alert('Cập nhật tên hiển thị thành công!');</script>";
+            echo "<script>alert('Cập nhật thông tin thành công!');</script>";
         } else {
             echo "<script>alert('Cập nhật thất bại.');</script>";
         }
@@ -28,16 +35,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_info'])) {
         echo "<script>alert('Tên hiển thị không được để trống!');</script>";
     }
 }
+
 $user_id = $_SESSION['user_id'];
-$result = $conn->query("SELECT display_name, avatar FROM users WHERE id = $user_id");
+// Lấy thông tin của người dùng từ cơ sở dữ liệu
+$result = $conn->query("SELECT display_name, avatar, date_of_birth, gender, address FROM users WHERE id = $user_id");
+
 $current_display_name = '';
 $avatar_path = 'image/user-avatar.png'; // Mặc định
+$dob_day = $dob_month = $dob_year = '';
+$gender = ''; // Thêm giới tính
+$current_address = ''; // Thêm địa chỉ
+
 if ($result && $row = $result->fetch_assoc()) {
     $current_display_name = $row['display_name'];
+    $current_address = $row['address']; // Lấy địa chỉ từ CSDL
+
+    // Xử lý avatar, ngày sinh, giới tính
     if (!empty($row['avatar']) && file_exists($row['avatar'])) {
         $avatar_path = $row['avatar'];
     }
+
+    if (!empty($row['date_of_birth'])) {
+        $dob_parts = explode('-', $row['date_of_birth']);
+        $dob_year = (int)$dob_parts[0];
+        $dob_month = (int)$dob_parts[1];
+        $dob_day = (int)$dob_parts[2];
+    }
+
+    if (!empty($row['gender'])) {
+        $gender = $row['gender'];
+    }
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     $user_id = $_SESSION['user_id'];
@@ -107,6 +136,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
         echo "<script>alert('Vui lòng chọn file ảnh.');</script>";
     }
 }
+
+$day = $_POST['day'];
+$month = $_POST['month'];
+$year = $_POST['year'];
+$dob = "$year-$month-$day"; // định dạng yyyy-mm-dd
+
+// Sau đó lưu vào CSDL như:
+$stmt = $conn->prepare("UPDATE users SET date_of_birth = ? WHERE id = ?");
+$stmt->bind_param("si", $dob, $user_id);
+
 
 
 ?>
@@ -205,7 +244,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
         }
 
         .profile-info label {
-            display: block;
+            display: flex;
+            align-items: flex-start;
             font-weight: bold;
             margin-top: 10px;
         }
@@ -341,25 +381,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
                     <input type="text" id="display-name" name="display_name" value="<?= htmlspecialchars($current_display_name) ?>">
     
                     <label for="dob">Ngày sinh</label>
-                    <select id="day">
-                        <option>2</option>
-                    </select>
-                    <select id="month">
-                        <option>Tháng 9</option>
-                    </select>
-                    <select id="year">
-                        <option>2005</option>
-                    </select>
+                    <!-- Ngày -->
+<select id="day" name="day">
+    <?php
+    for ($d = 1; $d <= 31; $d++) {
+        $selected = ($d == $dob_day) ? 'selected' : '';
+        echo "<option value='$d' $selected>$d</option>";
+    }
+    ?>
+</select>
+
+<!-- Tháng -->
+<select id="month" name="month">
+    <?php
+    for ($m = 1; $m <= 12; $m++) {
+        $selected = ($m == $dob_month) ? 'selected' : '';
+        echo "<option value='$m' $selected>Tháng $m</option>";
+    }
+    ?>
+</select>
+
+<!-- Năm -->
+<select id="year" name="year">
+    <?php
+    $current_year = date('Y');
+    for ($y = $current_year; $y >= $current_year - 100; $y--) {
+        $selected = ($y == $dob_year) ? 'selected' : '';
+        echo "<option value='$y' $selected>$y</option>";
+    }
+    ?>
+</select>
+
     
                     <label>Giới tính</label>
                     <div class="gender">
-                        <input type="radio" name="gender" checked> Nam
-                        <input type="radio" name="gender"> Nữ
-                        <input type="radio" name="gender"> Không tiết lộ
-                    </div>
+    <label><input type="radio" name="gender" value="male" <?= ($gender === 'male') ? 'checked' : '' ?>> Nam</label>
+    <label><input type="radio" name="gender" value="female" <?= ($gender === 'female') ? 'checked' : '' ?>> Nữ</label>
+    <label><input type="radio" name="gender" value="other" <?= ($gender === 'other') ? 'checked' : '' ?>> Không tiết lộ</label>
+</div>
     
-                    <label for="address">Địa chỉ</label>
-                    <input type="text" id="address" placeholder="Nhập địa chỉ liên lạc">
+<label for="address">Địa chỉ</label>
+<input type="text" id="address" name="address" placeholder="Nhập địa chỉ liên lạc" value="<?= htmlspecialchars($current_address) ?>">
+
     
                     <button class="more-info">Thông tin thêm</button>
                     <button type="submit" name="save_info" class="save-info">Lưu thông tin</button>
@@ -399,6 +462,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
             const dropdown = document.getElementById("myDropdown");
             dropdown.style.display = "none";
         }
+    }
+    // Tạo ngày (1-31)
+    const daySelect = document.getElementById('day');
+    for (let i = 1; i <= 31; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        daySelect.appendChild(opt);
+    }
+
+    // Tạo tháng (1-12)
+    const monthSelect = document.getElementById('month');
+    for (let i = 1; i <= 12; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = 'Tháng ' + i;
+        monthSelect.appendChild(opt);
+    }
+
+    // Tạo năm (từ hiện tại đến 100 năm trước)
+    const yearSelect = document.getElementById('year');
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= currentYear - 100; i--) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        yearSelect.appendChild(opt);
     }
 
         </script>
