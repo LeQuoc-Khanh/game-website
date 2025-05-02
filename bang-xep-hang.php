@@ -1,5 +1,5 @@
 <?php
-$conn = new mysqli('localhost', 'root', '', 'game-website');
+include_once 'connect.php';
 
 // Lấy danh sách điểm Pacman
 $sql = "SELECT username, pacman_score FROM users ORDER BY pacman_score DESC LIMIT 10";

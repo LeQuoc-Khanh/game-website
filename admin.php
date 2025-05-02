@@ -1,11 +1,11 @@
 <?php
 session_start();
-include_once '../connect.php';
+include_once 'connect.php';
 
 // Kiểm tra đăng nhập và vai trò admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     echo "<script>alert('Bạn không có quyền truy cập do chưa đăng nhập!');</script>";
-    echo "<script>window.location.href = '/game-website/dang-nhap/dang-nhap.php';</script>";
+    echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_game'])) {
     $name = $_POST['name'];
     $description = $_POST['description'];
     $link = $_POST['link'];
-    $conn->query("INSERT INTO games (name, description, link) VALUES ('$name', '$description', '$link')");
+    $conn->query("INSERT INTO games (game_name, game_url) VALUES ('$name', '$link')");
     header("Location: admin.php?section=games");
     exit;
 }
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_game'])) {
 // Xử lý xóa game
 if (isset($_GET['delete_game_id'])) {
     $id = (int)$_GET['delete_game_id'];
-    $conn->query("DELETE FROM games WHERE id = $id");
+    $conn->query("DELETE FROM games WHERE game_name = $id");
     header("Location: admin.php?section=games");
     exit;
 }
@@ -257,7 +257,7 @@ table td a:hover {
     <div class="admin-menu">
         <img src="" alt="Admin Avatar" class="admin-avatar">
         <div class="dropdown">
-            <a href="trang-chu.html">Trang chủ</a>
+            <a href="trang-chu.php">Trang chủ</a>
             <a href="admin.php">Quản trị</a>
             <a href="/game-website/dang-xuat.php">Đăng xuất</a>
         </div>
@@ -296,8 +296,15 @@ table td a:hover {
         ?>
         <table>
                 <tr>
-                    <th>ID</th><th>Email</th><th>Username</th><th>Password</th>
-                    <th>Role</th><th>Pacman</th><th>Snake</th><th>Tetris</th><th>Hành động</th>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                    <th>Pacman</th>
+                    <th>Snake</th>
+                    <th>Tetris</th>
+                    <th>Hành động</th>
                 </tr>
                 <?php if ($result->num_rows > 0): ?>
                     <?php while($row = $result->fetch_assoc()): ?>
@@ -327,7 +334,6 @@ table td a:hover {
 <form method="POST" style="margin-bottom: 20px;">
     <h3>Thêm game mới</h3>
     <input type="text" name="name" placeholder="Tên game" required style="margin-right: 10px;">
-    <input type="text" name="description" placeholder="Mô tả" required style="margin-right: 10px;">
     <input type="text" name="link" placeholder="Link chơi game" required style="margin-right: 10px;">
     <button type="submit" name="add_game">Thêm</button>
 </form>
@@ -335,21 +341,17 @@ table td a:hover {
 <!-- Danh sách game -->
 <table>
     <tr>
-        <th>ID</th>
         <th>Tên Game</th>
-        <th>Mô tả</th>
         <th>Link</th>
         <th>Hành động</th>
     </tr>
     <?php if ($games->num_rows > 0): ?>
         <?php while ($game = $games->fetch_assoc()): ?>
             <tr>
-                <td><?= $game['id'] ?></td>
-                <td><?= htmlspecialchars($game['name']) ?></td>
-                <td><?= htmlspecialchars($game['description']) ?></td>
-                <td><a href="<?= htmlspecialchars($game['link']) ?>" target="_blank">Chơi</a></td>
+                <td><?= htmlspecialchars($game['game_name']) ?></td>
+                <td><a href="<?= htmlspecialchars($game['game_url']) ?>" target="_blank">Chơi</a></td>
                 <td>
-                    <a href="?section=games&delete_game_id=<?= $game['id'] ?>" onclick="return confirm('Xóa game này?');">Xóa</a>
+                    <a href="?section=games&delete_game_id=<?= $game['game_name'] ?>" onclick="return confirm('Xóa game này?');">Xóa</a>
                 </td>
             </tr>
         <?php endwhile; ?>

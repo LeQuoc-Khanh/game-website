@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once 'connect.php';
+$games = $conn->query("SELECT * FROM games");
 ?>
 
 <!DOCTYPE html>
@@ -273,6 +274,18 @@ h2 {
 </header>
 <div class="content-wrapper">
     <div class="main">
+    <?php
+    if ($games->num_rows > 0) {
+        while ($row = $games->fetch_assoc()) {
+            echo '<div class="game-card">';
+            echo '<a href="' . htmlspecialchars($row['game_url']) . '">';
+            // echo '<img src="' . htmlspecialchars($row['game_image']) . '" alt="' . htmlspecialchars($row['game_name']) . '">';
+            echo '<p>' . htmlspecialchars($row['game_name']) . '</p>';
+            echo '</a>';
+            echo '</div>';
+        }
+    } 
+    ?>
         <div class="game-card">
             <a href="/game-website/game/Pacman/pacman.html">Pacman</a>
         </div>

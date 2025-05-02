@@ -1,11 +1,6 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "game-website");
-
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
+include_once 'connect.php';
 ?>
 
 <!DOCTYPE html>
@@ -121,10 +116,17 @@ h2 {
     display: block;
 }
 
-.main {
-    display: flex; 
-    gap: 10px;                  
+.content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 500px;
     padding: 40px;
+}
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
 
 }
 
@@ -137,6 +139,8 @@ h2 {
     width: 100px;
     cursor: pointer;
     transition: 0.3s;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .game-card a:hover {
@@ -160,6 +164,15 @@ h2 {
     border-radius: 12px;
     padding: 10px;
 }
+.leaderboard-section ol {
+    padding-left: 20px;
+}
+
+.leaderboard-section li {
+    margin-bottom: 6px;
+    font-size: 16px;
+}
+
 
 
 
@@ -178,30 +191,59 @@ h2 {
 }
 
 
-
 .ads-container {
     display: flex;
-    gap: 10px; /* Khoảng cách giữa các bảng quảng cáo */
+    gap: 10px;
     margin-top: 20px;
+    margin-left: 50px;
+}
+.ads {
+    width: 23%;
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.ads {
-    width: 24%; /* Mỗi bảng quảng cáo chiếm khoảng 1/4 chiều rộng */
-    height: 300px;
-    border-radius: 0px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    border: 1px solid red;
+.ads:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
+
+.ads img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+
+.ads a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+}
+
 
 .footer {
     text-align: center;
     padding: 20px;
     background: #ddd;
     font-size: 16px;
+    margin-top: 10px;
+}
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    .main,
+    .leaderboard {
+        width: 100%;
+    }
 }
 
     </style>
@@ -217,89 +259,108 @@ h2 {
                     Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?>
                 </button>
                 <div id="myDropdown" class="dropdown-content">
-                    <a href="/game-website/user/tai-khoan.php">Tài Khoản</a>
+                    <a href="/game-website/tai-khoan.php">Tài Khoản</a>
                     <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
                     <a href="/game-website/dang-xuat.php">Đăng xuất</a>
                 </div>
             </div>
         <?php else: ?>
-            <a href="/game-website/dang-nhap/dang-nhap.php">
+            <a href="/game-website/dang-nhap.php">
                 <button class="login">Đăng nhập</button>
             </a>
         <?php endif; ?>
     </div>
 </header>
-
-<div class="main">
+<div class="content-wrapper">
+    <div class="main">
         <div class="game-card">
             <a href="/game-website/game/Pacman/pacman.html">Pacman</a>
         </div>
         <div class="game-card">
-            <a href="/game-website/game/Tetris/tetris.php">Tetris</a> 
+                <a href="/game-website/game/Tetris/tetris.php">Tetris</a> 
         </div>
         <div class="game-card">
-           <a href="/game-website/game/Snake/snake.html">Snake</a> 
+            <a href="/game-website/game/Snake/snake.html">Snake</a> 
         </div>
-</div>
+    </div>
     <div class="leaderboard">
         <h2>Bảng Xếp Hạng</h2>
+        <div class="leaderboard-section">
+            <h3>Pacman</h3>
+            <ol>
         <?php
             // Truy vấn lấy bảng xếp hạng, loại bỏ tài khoản admin
             $sql = "SELECT username, pacman_score FROM users WHERE role != 'admin' ORDER BY pacman_score DESC LIMIT 10";
             $result = $conn->query($sql);
 
             // Hiển thị bảng xếp hạng Pacman
-            echo "<h3>Pacman</h3>";
             while ($row = $result->fetch_assoc()) {
-                echo htmlspecialchars($row['username']) . "; điểm: " . $row['pacman_score'] . "<br>";
+                echo "<li>" . htmlspecialchars($row['username']) . ": <strong>" . $row['pacman_score'] . "</strong></li>";
             }
-
-            // Truy vấn bảng xếp hạng Snake
+            ?>
+            </ol>
+        </div>
+        <div class="leaderboard-section">
+            <h3>Snake</h3>
+            <ol>
+        <?php
+            // Truy vấn lấy bảng xếp hạng, loại bỏ tài khoản admin
             $sql = "SELECT username, snake_score FROM users WHERE role != 'admin' ORDER BY snake_score DESC LIMIT 10";
             $result = $conn->query($sql);
 
-            // Hiển thị bảng xếp hạng Snake
-            echo "<h3>Snake</h3>";
+            // Hiển thị bảng xếp hạng Pacman
             while ($row = $result->fetch_assoc()) {
-                echo htmlspecialchars($row['username']) . "; điểm: " . $row['snake_score'] . "<br>";
+                echo "<li>" . htmlspecialchars($row['username']) . ": <strong>" . $row['snake_score'] . "</strong></li>";
             }
-
-            // Truy vấn bảng xếp hạng Tetris
+            ?>
+            </ol>
+        </div>
+        <div class="leaderboard-section">
+            <h3>Tetris</h3>
+            <ol>
+        <?php
+            // Truy vấn lấy bảng xếp hạng, loại bỏ tài khoản admin
             $sql = "SELECT username, tetris_score FROM users WHERE role != 'admin' ORDER BY tetris_score DESC LIMIT 10";
             $result = $conn->query($sql);
 
-            // Hiển thị bảng xếp hạng Tetris
-            echo "<h3>Tetris</h3>";
+            // Hiển thị bảng xếp hạng Pacman
             while ($row = $result->fetch_assoc()) {
-                echo htmlspecialchars($row['username']) . "; điểm: " . $row['tetris_score'] . "<br>";
+                echo "<li>" . htmlspecialchars($row['username']) . ": <strong>" . $row['tetris_score'] . "</strong></li>";
             }
-        ?>
-    </div>    
-<h2>Quảng cáo</h2>
-<div class="ads-container">
-  <div class="ads">
-    <a href="https://www.thegioididong.com/dtdd/iphone-16e" target="_blank"></a>
-    <img src="https://tse2.mm.bing.net/th?id=OIP.dGlsfbBpyyFpjrVQylOGRwHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 1">
-  </div>
-
-  <div class="ads">
-    <a href="https://gamevui.vn/" target="_blank"></a>
-    <img src="https://tse3.mm.bing.net/th?id=OIP.THckrV-rsMX4P0KNJlK79QHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 1">
-  </div>
-
-  <div class="ads">
-    <a href="https://www.smartprix.com/laptops/acer-aspire-7-a715-76g-un-qmesi-004-gaming-ppd1i5f0q0id" target="_blank"></a>
-    <img src="https://tse3.mm.bing.net/th?id=OIP.vKUIFtPUJK5pg1icFYRSyAHaFO&pid=Api&P=0&h=180" alt="Quảng cáo 1">
-  </div>
-
-  <div class="ads">
-    <a href="https://nhandaithanh.com/collections/may-lanh-panasonic" target="_blank"></a>
-    <img src="https://tse1.mm.bing.net/th?id=OIP.K6dpHuWIDjx94btelDLW-gHaE7&pid=Api&P=0&h=180" alt="Quảng cáo 1">
-  </div>
-</div>
-
+            ?>
+            </ol>
+        </div>
     </div>
 </div>
+    <h2>Quảng cáo</h2>
+<div class="ads-container">
+  <div class="ads">
+    <a href="https://www.thegioididong.com/dtdd/iphone-16e" target="_blank">
+      <img src="https://tse2.mm.bing.net/th?id=OIP.dGlsfbBpyyFpjrVQylOGRwHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 1">
+    </a>
+  </div>
+
+  <div class="ads">
+    <a href="https://gamevui.vn/" target="_blank">
+      <img src="https://tse3.mm.bing.net/th?id=OIP.THckrV-rsMX4P0KNJlK79QHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 2">
+    </a>
+  </div>
+
+  <div class="ads">
+    <a href="https://www.smartprix.com/laptops/acer-aspire-7-a715-76g-un-qmesi-004-gaming-ppd1i5f0q0id" target="_blank">
+      <img src="https://tse3.mm.bing.net/th?id=OIP.vKUIFtPUJK5pg1icFYRSyAHaFO&pid=Api&P=0&h=180" alt="Quảng cáo 3">
+    </a>
+  </div>
+
+  <div class="ads">
+    <a href="https://nhandaithanh.com/collections/may-lanh-panasonic" target="_blank">
+      <img src="https://tse1.mm.bing.net/th?id=OIP.K6dpHuWIDjx94btelDLW-gHaE7&pid=Api&P=0&h=180" alt="Quảng cáo 4">
+    </a>
+  </div>
+</div>
+
+
+
 
 
 <!-- Footer -->

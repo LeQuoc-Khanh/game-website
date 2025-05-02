@@ -1,6 +1,6 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "game-website");
+include_once 'connect.php';
 
 if (!isset($_SESSION['username'])) {
     die("Bạn chưa đăng nhập.");
