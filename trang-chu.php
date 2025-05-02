@@ -255,10 +255,14 @@ h2 {
     <h1>gamevui24h.com</h1>
     <div class="auth-buttons">
     <?php if (isset($_SESSION['username'])): ?>
-    <div class="dropdown">
-        <button onclick="toggleDropdown()" class="dropbtn">
-            Xin chào, <?php echo htmlspecialchars($_SESSION['display_name'] ?? $_SESSION['username']); ?>
-        </button>
+        <?php
+$nameToShow = isset($_SESSION['display_name']) && $_SESSION['display_name'] !== ''
+    ? $_SESSION['display_name']
+    : $_SESSION['username'];
+?>
+<button onclick="toggleDropdown()" class="dropbtn">
+    👋 Xin chào, <strong><?php echo htmlspecialchars($nameToShow); ?></strong>
+</button>
         <div id="myDropdown" class="dropdown-content">
             <a href="/game-website/tai-khoan.php">Tài Khoản</a>
             <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
