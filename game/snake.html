@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Rắn</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #2f2f2f;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+.game-container {
+    width: 600px;
+    height: 700px;
+    background: #34495e;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+h1 {
+    color: #ffcc00;
+    text-align: center;
+    font-size: 28px;
+    margin: 0;
+}
+#gameCanvas {
+    border: 1px solid #fff;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    margin-bottom: 20px;
+}
+#restartButton {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ff6347;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    display: none;
+}
+#restartButton:hover {
+    background-color: #ff4500;
+}
+.score {
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Game Rắn</h1>
+        <canvas id="gameCanvas" width="550" height="550"></canvas>
+        <button id="restartButton" onclick="restartGame()">Chơi lại</button>
+        <div class="score" id="score">Score: 0</div>
+    </div>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreElement = document.getElementById("score");
+        const snakeSize = 20; // Kích thước mỗi ô (rắn và mồi)
+        let snake, food, direction, score, gameOver;
+        let directions;
+
+        // Khởi tạo lại game
+        function restartGame() {
+            snake = [{ x: 260, y: 260 }]; // Vị trí khởi đầu ở giữa canvas
+            food = { x: 0, y: 0 };
+            direction = 'RIGHT';
+            score = 0;
+            gameOver = false;
+            document.getElementById("restartButton").style.display = "none";
+            scoreElement.innerText = `Score: ${score}`;
+            generateFood();
+            updateGame();
+        }
+
+        // Định nghĩa các hướng di chuyển
+        function initializeGame() {
+            directions = {
+                'LEFT': { x: -snakeSize, y: 0 },
+                'RIGHT': { x: snakeSize, y: 0 },
+                'UP': { x: 0, y: -snakeSize },
+                'DOWN': { x: 0, y: snakeSize },
+            };
+            restartGame();
+        }
+
+        // Điều khiển bằng phím
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft" && direction !== 'RIGHT') direction = 'LEFT';
+            if (event.key === "ArrowRight" && direction !== 'LEFT') direction = 'RIGHT';
+            if (event.key === "ArrowUp" && direction !== 'DOWN') direction = 'UP';
+            if (event.key === "ArrowDown" && direction !== 'UP') direction = 'DOWN';
+        });
+
+        // Tạo vị trí mới cho mồi, đảm bảo không trùng với rắn
+        function generateFood() {
+            let validPosition = false;
+            while (!validPosition) {
+                food.x = Math.floor(Math.random() * (canvas.width / snakeSize)) * snakeSize;
+                food.y = Math.floor(Math.random() * (canvas.height / snakeSize)) * snakeSize;
+                validPosition = !snake.some(segment => segment.x === food.x && segment.y === food.y);
+            }
+        }
+
+        // Vẽ rắn
+        function drawSnake() {
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = i === 0 ? '#32CD32' : '#98FB98'; // Đầu rắn xanh đậm, thân xanh nhạt
+                ctx.fillRect(snake[i].x, snake[i].y, snakeSize - 1, snakeSize - 1); // Khe hở nhỏ
+            }
+        }
+
+        // Vẽ mồi
+        function drawFood() {
+            ctx.fillStyle = '#FF6347';
+            ctx.fillRect(food.x, food.y, snakeSize - 1, snakeSize - 1);
+        }
+
+        // Cập nhật trạng thái game
+        function updateGame() {
+            if (gameOver) {
+                ctx.font = "24px Arial";
+                ctx.fillStyle = "white";
+                ctx.fillText("Game Over! Score: " + score, 120, canvas.height / 2);
+                document.getElementById("restartButton").style.display = "block";
+                return;
+            }
+
+            // Di chuyển rắn
+            let head = { x: snake[0].x + directions[direction].x, y: snake[0].y + directions[direction].y };
+            snake.unshift(head);
+
+            // Kiểm tra ăn mồi
+            if (Math.abs(head.x - food.x) < snakeSize && Math.abs(head.y - food.y) < snakeSize) {
+                score++;
+                scoreElement.innerText = `Score: ${score}`;
+                generateFood(); // Tạo mồi mới
+                // Không gọi snake.pop() để rắn dài ra
+            } else {
+                snake.pop(); // Xóa đuôi nếu không ăn mồi
+            }
+
+            // Kiểm tra va chạm với tường hoặc chính rắn
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
+                gameOver = true;
+                saveScore(score); // Lưu điểm số
+            }
+
+            // Vẽ lại màn hình
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSnake();
+            drawFood();
+            setTimeout(updateGame, 100); // Cập nhật mỗi 100ms
+        }
+        initializeGame();
+
+        function saveScore(score) {
+            fetch('/game-website/update_score.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'score=' + score + '&game=snake' // <--- THÊM tên game ở đây
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $_SESSION['message'] = "Thêm game thành công!";
         header("Location: admin.php?section=games");
-        exit;
+        exit();
     }
 
     if (isset($_POST['edit_game'])) {
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $_SESSION['message'] = "Cập nhật game thành công!";
         header("Location: admin.php?section=games");
-        exit;
+        exit();
     }
 }
 
@@ -68,7 +68,7 @@ if (isset($_GET['delete_game_id'])) {
     $stmt->execute();
     $_SESSION['message'] = "Game đã được ẩn thành công!";
     header("Location: admin.php?section=games");
-    exit;
+    exit();
 }
 
 if (isset($_GET['restore_game_id'])) {
@@ -78,7 +78,7 @@ if (isset($_GET['restore_game_id'])) {
     $stmt->execute();
     $_SESSION['message'] = "Game đã được hiển thị lại thành công!";
     header("Location: admin.php?section=games");
-    exit;
+    exit();
 }
 
 if (isset($_GET['permanently_delete_game_id'])) {
@@ -88,7 +88,7 @@ if (isset($_GET['permanently_delete_game_id'])) {
     $stmt->execute();
     $_SESSION['message'] = "Game đã được xóa vĩnh viễn!";
     header("Location: admin.php?section=games");
-    exit;
+    exit();
 }
 
 $section = $_GET['section'] ?? 'dashboard';
@@ -356,7 +356,6 @@ if (isset($_SESSION['message'])) {
                 <tr>
                     <th>ID</th>
                     <th>Username</th>
-                    <th>Display Name</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Pacman</th>
@@ -369,7 +368,6 @@ if (isset($_SESSION['message'])) {
                         <tr>
                             <td><?= $row['id'] ?></td>
                             <td><?= htmlspecialchars($row['username']) ?></td>
-                            <td><?= htmlspecialchars($row['display_name']) ?></td>
                             <td><?= htmlspecialchars($row['email']) ?></td>
                             <!-- <td class="password"><?= htmlspecialchars($row['password']) ?></td> -->
                             <td><?= $row['role'] ?></td>
@@ -423,7 +421,6 @@ if (isset($_GET['edit_game_id'])) {
 <table>
     <tr>
         <th>Tên Game</th>
-        <th>Link</th>
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
@@ -431,7 +428,6 @@ if (isset($_GET['edit_game_id'])) {
         <?php while ($game = $games->fetch_assoc()): ?>
             <tr>
                 <td><?= htmlspecialchars($game['game_name']) ?></td>
-                <td><a href="<?= htmlspecialchars($game['game_url']) ?>" target="_blank">Chơi</a></td>
                 <td><?= $game['is_active'] ? 'Đang hiển thị' : 'Đã ẩn' ?></td>
                 <td>
     <a href="?section=games&edit_game_id=<?= urlencode($game['game_name']) ?>">Sửa</a> |

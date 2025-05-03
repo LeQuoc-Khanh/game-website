@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pac-Man Game</title>
+  <style>
+    body {
+  font-family: sans-serif;
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+#game {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  gap: 2px;
+  margin: auto;
+  width: fit-content;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  background-color: #222;
+  border: 1px solid #444;
+  box-sizing: border-box;
+}
+
+.wall {
+  background-color: blue;
+}
+
+.pacman {
+  background-color: yellow;
+  border-radius: 50%;
+}
+.ghost {
+  background-color: red; /* Ghosts sẽ có màu đỏ */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute; /* Thêm vị trí tuyệt đối để chúng không bị thay đổi theo lưới */
+}
+
+.dot {
+  background-color: white;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  margin: auto;
+}
+
+  </style>
+</head>
+<body>
+    <h1>Pac-Man</h1>
+    <p>Score: <span id="score">0</span></p>
+    <div id="game"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    const game = document.getElementById('game');
+    const width = 10;
+    const height = 10;
+    const cells = [];
+    let pacmanIndex = 22; // Pac-Man's starting position
+    let score = 0;
+    const scoreDisplay = document.getElementById('score');
+
+// Bản đồ đơn giản (0: đường, 1: tường)
+const map = [
+  1,1,1,1,1,1,1,1,1,1,
+  1,0,0,0,0,0,0,0,0,1,
+  1,0,1,1,0,1,1,1,0,1,
+  1,0,1,0,0,0,0,1,0,1,
+  1,0,1,0,1,1,0,1,0,1,
+  1,0,0,0,1,0,0,1,0,1,
+  1,0,1,1,1,0,1,1,0,1,
+  1,0,0,0,0,0,0,0,0,1,
+  1,0,0,0,0,0,0,0,0,1,
+  1,1,1,1,1,1,1,1,1,1,
+];
+
+// Vị trí Ghosts
+let ghosts = [
+  { index: 12, direction: 'right' },
+  { index: 34, direction: 'down' },
+  { index: 56, direction: 'left' },
+  { index: 78, direction: 'up' }
+];
+
+// Khởi tạo bảng chơi
+function createBoard() {
+  for (let i = 0; i < width * height; i++) {
+    const div = document.createElement('div');
+    div.classList.add('cell');
+    if (map[i] === 1) {
+      div.classList.add('wall');
+    } else {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      div.appendChild(dot);
+    }
+    game.appendChild(div);
+    cells.push(div);
+  }
+  cells[pacmanIndex].classList.add('pacman');
+
+  ghosts.forEach(ghost => {
+    cells[ghost.index].classList.add('ghost');
+  });
+}
+// Di chuyển pacman
+function movePacman(e) {
+  cells[pacmanIndex].classList.remove('pacman');
+  let nextIndex = pacmanIndex;
+
+  if (e.key === 'ArrowUp') nextIndex -= width;
+  else if (e.key === 'ArrowDown') nextIndex += width;
+  else if (e.key === 'ArrowLeft') nextIndex -= 1;
+  else if (e.key === 'ArrowRight') nextIndex += 1;
+
+  // Kiểm tra hợp lệ
+  if (
+    map[nextIndex] === 0 &&
+    nextIndex >= 0 &&
+    nextIndex < width * height
+  ) {
+    pacmanIndex = nextIndex;
+  }
+
+  cells[pacmanIndex].classList.add('pacman');
+
+  // Kiểm tra và cập nhật điểm khi Pac-Man ăn dot
+  const dot = cells[pacmanIndex].querySelector('.dot');
+  if (dot) {
+    dot.remove();
+    score += 10; // Mỗi dot cho 10 điểm
+    scoreDisplay.textContent = score;
+  }
+  checkGameOver(); // Kiểm tra nếu Pac-Man gặp Ghost
+}
+// Di chuyển Ghosts
+function moveGhosts() {
+  ghosts.forEach(ghost => {
+    cells[ghost.index].classList.remove('ghost');
+
+    // Di chuyển ngẫu nhiên
+    let nextIndex = ghost.index;
+
+    if (ghost.direction === 'right') nextIndex += 1;
+    else if (ghost.direction === 'down') nextIndex += width;
+    else if (ghost.direction === 'left') nextIndex -= 1;
+    else if (ghost.direction === 'up') nextIndex -= width;
+
+    // Kiểm tra va chạm với tường hoặc các rào cản
+    if (map[nextIndex] !== 1 && nextIndex >= 0 && nextIndex < width * height) {
+      ghost.index = nextIndex;
+    } else {
+      ghost.direction = getRandomDirection(); // Chọn hướng ngẫu nhiên mới khi gặp tường
+    }
+
+    cells[ghost.index].classList.add('ghost');
+  });
+}
+
+// Kiểm tra nếu Pac-Man gặp Ghost
+function checkGameOver() {
+  ghosts.forEach(ghost => {
+    if (pacmanIndex === ghost.index) {
+      alert('Game Over');
+      resetGame();
+    }
+  });
+}
+
+// Lấy hướng di chuyển ngẫu nhiên cho Ghost
+function getRandomDirection() {
+  const directions = ['up', 'down', 'left', 'right'];
+  return directions[Math.floor(Math.random() * directions.length)];
+}
+
+// Cập nhật lại trò chơi sau khi game over
+function resetGame() {
+  pacmanIndex = 22; // Reset Pac-Man về vị trí ban đầu
+  score = 0;
+  scoreDisplay.textContent = score;
+
+  ghosts.forEach(ghost => {
+    do {
+      ghost.index = getRandomStartingPosition();
+    } while (ghost.index === pacmanIndex); // Đảm bảo Ghost không xuất hiện tại vị trí của Pac-Man
+    ghost.direction = getRandomDirection();
+  });
+
+  cells[pacmanIndex].classList.add('pacman');
+  ghosts.forEach(ghost => {
+    cells[ghost.index].classList.add('ghost');
+  });
+}
+
+
+// Lấy vị trí bắt đầu ngẫu nhiên cho Ghost
+function getRandomStartingPosition() {
+  return Math.floor(Math.random() * (width * height));
+}
+
+
+
+document.addEventListener('keydown', movePacman);
+// Di chuyển Ghosts mỗi 500ms
+setInterval(moveGhosts, 500);
+
+createBoard();
+</script>
+</body>
+</html>

@@ -147,18 +147,9 @@ h2 {
     box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
-.game-card img {
-    width: 100%;
-    height: 180px; /* Điều chỉnh độ cao của hình ảnh cho phù hợp */
-    object-fit: cover;
-    border-radius: 10px;
-}
 
-.game-card a {
-    display: block;
-    text-decoration: none;
-    color: black;
-}
+
+
 
 .game-card p {
     font-size: 18px;
