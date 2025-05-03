@@ -125,9 +125,7 @@ h2 {
 }
 .main {
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
-    align-items: flex-start;
 
 }
 
@@ -137,7 +135,7 @@ h2 {
     border-radius: 0px;
     padding: 20px;
     text-align: center;
-    width: 100px;
+    width: 110px;
     cursor: pointer;
     transition: 0.3s;
     flex-shrink: 0;
@@ -154,7 +152,7 @@ h2 {
 .game-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
-}
+}  
     
 
 
