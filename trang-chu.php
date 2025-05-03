@@ -198,6 +198,7 @@ h2 {
     margin-top: 20px;
     margin-left: 50px;
 }
+
 .ads {
     width: 23%;
     height: auto;
@@ -227,6 +228,23 @@ h2 {
     height: 100%;
     width: 100%;
     text-decoration: none;
+}
+
+.ad-info {
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+.ad-info h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.ad-info .price {
+    font-size: 16px;
+    color: #e74c3c;
+    font-weight: bold;
 }
 
 
@@ -341,29 +359,45 @@ h2 {
         </div>
     </div>
 </div>
-    <h2>Quảng cáo</h2>
+<h2>Quảng cáo</h2>
 <div class="ads-container">
   <div class="ads">
     <a href="https://www.thegioididong.com/dtdd/iphone-16e" target="_blank">
       <img src="https://tse2.mm.bing.net/th?id=OIP.dGlsfbBpyyFpjrVQylOGRwHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 1">
+      <div class="ad-info">
+        <h3>iPhone 16e</h3>
+        <p class="price">8.990.000 VND</p>
+      </div>
     </a>
   </div>
 
   <div class="ads">
     <a href="https://gamevui.vn/" target="_blank">
       <img src="https://tse3.mm.bing.net/th?id=OIP.THckrV-rsMX4P0KNJlK79QHaHa&pid=Api&P=0&h=180" alt="Quảng cáo 2">
+      <div class="ad-info">
+        <h3>Game Vui</h3>
+        <p class="price">Miễn phí</p>
+      </div>
     </a>
   </div>
 
   <div class="ads">
     <a href="https://www.smartprix.com/laptops/acer-aspire-7-a715-76g-un-qmesi-004-gaming-ppd1i5f0q0id" target="_blank">
       <img src="https://tse3.mm.bing.net/th?id=OIP.vKUIFtPUJK5pg1icFYRSyAHaFO&pid=Api&P=0&h=180" alt="Quảng cáo 3">
+      <div class="ad-info">
+        <h3>Acer Aspire 7</h3>
+        <p class="price">16.990.000 VND</p>
+      </div>
     </a>
   </div>
 
   <div class="ads">
     <a href="https://nhandaithanh.com/collections/may-lanh-panasonic" target="_blank">
       <img src="https://tse1.mm.bing.net/th?id=OIP.K6dpHuWIDjx94btelDLW-gHaE7&pid=Api&P=0&h=180" alt="Quảng cáo 4">
+      <div class="ad-info">
+        <h3>Máy Lạnh Panasonic</h3>
+        <p class="price">7.500.000 VND</p>
+      </div>
     </a>
   </div>
 </div>
