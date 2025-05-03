@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }else {
                 echo "<script>alert('Đăng nhập thành công!');</script>";
                 // Nếu là user, chuyển hướng đến trang chủ
-                echo "<script>window.location.href= '/game-website/home.php';</script>";
+                echo "<script>window.location.href= '/game-website/trang-chu.php';</script>";
             }
             exit();  // Đảm bảo không có mã nào chạy thêm sau khi chuyển hướng
         } else {
@@ -115,7 +115,7 @@ a:hover {
             <button type="submit">Đăng nhập</button>
         </form>
 
-        Bạn chưa có tài khoản?<a href="/game-website/register.php">Đăng ký</a>
+        Bạn chưa có tài khoản?<a href="/game-website/dang-ky.php">Đăng ký</a>
 </div>
 </body>
 </html>

@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($insert_stmt->execute()) {
                 echo "<script>
                     alert('Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.'); 
-                    window.location.href = '/game-website/login.php';</script>";
+                    window.location.href = '/game-website/dang-nhap.php';</script>";
             } else {
                 echo "Lỗi: " . $insert_stmt->error;
             }
@@ -116,7 +116,7 @@ a:hover {
             <input type="password" name="password" placeholder="Mật khẩu" required>
             <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" required>
             <button type="submit">Đăng ký</button>
-            Đã có tài khoản?<a href="/game-website/login.php">Đăng nhập ngay</a> 
+            Đã có tài khoản?<a href="/game-website/dang-nhap.php">Đăng nhập ngay</a> 
         </form>
     </div>
 </body>

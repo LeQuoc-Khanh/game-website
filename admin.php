@@ -5,7 +5,7 @@ include_once 'connect.php';
 // Kiểm tra đăng nhập và vai trò admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     echo "<script>alert('Bạn không có quyền truy cập do chưa đăng nhập!');</script>";
-    echo "<script>window.location.href = '/game-website/login.php';</script>";
+    echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
 
@@ -315,9 +315,9 @@ if (isset($_SESSION['message'])) {
     <div class="admin-menu">
         <img src="" alt="Admin Avatar" class="admin-avatar">
         <div class="dropdown">
-            <a href="home.php">Trang chủ</a>
+            <a href="trang-chu.php">Trang chủ</a>
             <a href="admin.php">Quản trị</a>
-            <a href="/game-website/logout.php">Đăng xuất</a>
+            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
         </div>
     </div>
 </div>

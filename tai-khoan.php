@@ -3,10 +3,10 @@ session_start(); // Bắt đầu session
 include_once 'connect.php';
 // Kiểm tra xem đã đăng nhập và có phải là admin không
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
-    $_SESSION['redirect_after_login'] = '/game-website/account.php';
+    $_SESSION['redirect_after_login'] = '/game-website/tai-khoan.php';
     // Nếu chưa đăng nhập
     echo "<script>alert('Bạn không có quyền truy cập do chưa đăng nhập!');</script>";
-    echo "<script>window.location.href = '/game-website/login.php';</script>";
+    echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
     exit();
 }
 // Kiểm tra xem có gửi thông tin cập nhật không
@@ -348,9 +348,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
     <div class="dropdown">
         <button onclick="toggleDropdown()" class="dropbtn">&#9776;</button>
         <div id="myDropdown" class="dropdown-content" style="display: none;">
-            <a href="/game-website/home.php">Trang chủ</a>
+            <a href="/game-website/trang-chu.php">Trang chủ</a>
             <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
-            <a href="/game-website/logout.php">Đăng xuất</a>
+            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
         </div>
     </div>
     <div><h1>gamevui24h</h1></div>
