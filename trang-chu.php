@@ -265,13 +265,13 @@ h2 {
             👋 Xin chào, <strong><?php echo htmlspecialchars($nameToShow); ?></strong>
         </button>
         <div id="myDropdown" class="dropdown-content">
-            <a href="/game-website/tai-khoan.php">Tài Khoản</a>
+            <a href="/game-website/account.php">Tài Khoản</a>
             <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
-            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
+            <a href="/game-website/logout.php">Đăng xuất</a>
         </div>
     </div>
         <?php else: ?>
-            <a href="/game-website/dang-nhap.php">
+            <a href="/game-website/login.php">
                 <button class="login">Đăng nhập</button>
             </a>
         <?php endif; ?>
@@ -291,15 +291,6 @@ h2 {
         }
     } 
     ?>
-        <div class="game-card">
-            <a href="/game-website/game/Pacman/pacman.html">Pacman</a>
-        </div>
-        <div class="game-card">
-                <a href="/game-website/game/Tetris/tetris.php">Tetris</a> 
-        </div>
-        <div class="game-card">
-            <a href="/game-website/game/snake.html">Snake</a> 
-        </div>
     </div>
     <div class="leaderboard">
         <h2>Bảng Xếp Hạng</h2>

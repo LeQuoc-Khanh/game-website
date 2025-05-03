@@ -13,16 +13,16 @@ if (isset($_SESSION['user_id'])) {
     if ($role == 'admin') {
         // Nếu là admin, chuyển về trang đăng nhập
         echo "<script>alert('Đăng xuất thành công!');</script>";
-        echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
+        echo "<script>window.location.href = '/game-website/login.php';</script>";
     } else {
         // Nếu là user, chuyển về trang chủ
         echo "<script>alert('Đăng xuất thành công!');</script>";
-        echo "<script>window.location.href = '/game-website/trang-chu.php';</script>";
+        echo "<script>window.location.href = '/game-website/home.php';</script>";
     }
     exit();
 } else {
     // Nếu không có session, trực tiếp chuyển về trang chủ
-    header("Location: /game-website/trang-chu.php");
+    header("Location: /game-website/home.php");
     exit();
 }
 ?>

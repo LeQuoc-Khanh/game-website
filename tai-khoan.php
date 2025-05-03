@@ -3,10 +3,10 @@ session_start(); // Bắt đầu session
 include_once 'connect.php';
 // Kiểm tra xem đã đăng nhập và có phải là admin không
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
-    $_SESSION['redirect_after_login'] = '/game-website/tai-khoan.php';
+    $_SESSION['redirect_after_login'] = '/game-website/account.php';
     // Nếu chưa đăng nhập
     echo "<script>alert('Bạn không có quyền truy cập do chưa đăng nhập!');</script>";
-    echo "<script>window.location.href = '/game-website/dang-nhap.php';</script>";
+    echo "<script>window.location.href = '/game-website/login.php';</script>";
     exit();
 }
 // Kiểm tra xem có gửi thông tin cập nhật không
@@ -136,17 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_avatar'])) {
         echo "<script>alert('Vui lòng chọn file ảnh.');</script>";
     }
 }
-
-$day = $_POST['day'];
-$month = $_POST['month'];
-$year = $_POST['year'];
-$dob = "$year-$month-$day"; // định dạng yyyy-mm-dd
-
-// Sau đó lưu vào CSDL như:
-$stmt = $conn->prepare("UPDATE users SET date_of_birth = ? WHERE id = ?");
-$stmt->bind_param("si", $dob, $user_id);
-
-
 
 ?>
 
@@ -359,9 +348,9 @@ $stmt->bind_param("si", $dob, $user_id);
     <div class="dropdown">
         <button onclick="toggleDropdown()" class="dropbtn">&#9776;</button>
         <div id="myDropdown" class="dropdown-content" style="display: none;">
-            <a href="/game-website/trang-chu.php">Trang chủ</a>
+            <a href="/game-website/home.php">Trang chủ</a>
             <a href="/game-website/game-yeu-thich/favorite.html">Game Yêu Thích</a>
-            <a href="/game-website/dang-xuat.php">Đăng xuất</a>
+            <a href="/game-website/logout.php">Đăng xuất</a>
         </div>
     </div>
     <div><h1>gamevui24h</h1></div>
@@ -417,7 +406,7 @@ $stmt->bind_param("si", $dob, $user_id);
                     <div class="gender">
     <label><input type="radio" name="gender" value="male" <?= ($gender === 'male') ? 'checked' : '' ?>> Nam</label>
     <label><input type="radio" name="gender" value="female" <?= ($gender === 'female') ? 'checked' : '' ?>> Nữ</label>
-    <label><input type="radio" name="gender" value="other" <?= ($gender === 'other') ? 'checked' : '' ?>> Không tiết lộ</label>
+    <label><input type="radio" name="gender" value="other" <?= ($gender === 'other') ? 'checked' : '' ?>> Khác</label>
 </div>
     
 <label for="address">Địa chỉ</label>
