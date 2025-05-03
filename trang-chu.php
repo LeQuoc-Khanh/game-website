@@ -126,33 +126,45 @@ h2 {
 .main {
     display: flex;
     gap: 10px;
-
 }
 
 
 .game-card {
     background: rgba(0, 0, 0, 0.05);
-    border-radius: 0px;
     padding: 20px;
     text-align: center;
-    width: 110px;
+    width: 23%; /* Đảm bảo cùng kích thước với quảng cáo */
     cursor: pointer;
-    transition: 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
     flex-shrink: 0;
     flex-grow: 0;
-}
-
-.game-card a:hover {
-    transform: scale(1.1);
-    background: rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    color: orange;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .game-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-}  
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.game-card img {
+    width: 100%;
+    height: 180px; /* Điều chỉnh độ cao của hình ảnh cho phù hợp */
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.game-card a {
+    display: block;
+    text-decoration: none;
+    color: black;
+}
+
+.game-card p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
     
 
 
@@ -300,7 +312,7 @@ h2 {
         while ($row = $games->fetch_assoc()) {
             echo '<div class="game-card">';
             echo '<a href="' . htmlspecialchars($row['game_url']) . '">';
-            // echo '<img src="' . htmlspecialchars($row['game_image']) . '" alt="' . htmlspecialchars($row['game_name']) . '">';
+            echo '<img src="' . htmlspecialchars($row['game_image']) . '" alt="' . htmlspecialchars($row['game_name']) . '">';
             echo '<p>' . htmlspecialchars($row['game_name']) . '</p>';
             echo '</a>';
             echo '</div>';
